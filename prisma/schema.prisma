@@ -19,3 +19,10 @@ model usuario{
   foto String?
   privilegios Boolean  
 }
+
+model artista{
+  id Int @id @default(autoincrement())
+  nome String
+  foto String?
+  streams Int
+}
