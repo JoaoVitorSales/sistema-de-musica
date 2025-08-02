@@ -26,6 +26,7 @@ model artista{
   nome String
   foto String?
   streams Int
+  musica musicas[]
 }
 
 model musicas{
@@ -33,6 +34,8 @@ model musicas{
   nome String
   genero String?
   album String?
+  artistaId Int
+  artista artista @relation(fields: [artistaId], references: [id])
   musicas usuarioMusica[]
 }
 
