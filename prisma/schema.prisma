@@ -17,7 +17,8 @@ model usuario{
   senha String
   email String @unique
   foto String?
-  privilegios Boolean  
+  privilegios Boolean 
+  usuarios usuarioMusica[] 
 }
 
 model artista{
@@ -32,4 +33,13 @@ model musicas{
   nome String
   genero String?
   album String?
+  musicas usuarioMusica[]
+}
+
+model usuarioMusica{
+  id Int @id @default(autoincrement())
+  musicaId Int
+  musica musicas @relation(fields: [musicaId], references: [id])
+  usuariosId Int
+  usuario usuario @relation(fields: [usuariosId], references: [id])
 }
