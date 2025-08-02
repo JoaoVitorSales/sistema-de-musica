@@ -26,3 +26,10 @@ model artista{
   foto String?
   streams Int
 }
+
+model musicas{
+  id Int @id @default(autoincrement())
+  nome String
+  genero String?
+  album String?
+}
