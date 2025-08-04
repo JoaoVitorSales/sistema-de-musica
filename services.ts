@@ -44,4 +44,39 @@ export async function updateMusica(id: number, data: { nome?: string; genero?: s
   });
 }
 
+// Lê todos os usuários
+export async function readUsuarios() {
+  return prisma.usuario.findMany();
+}
+
+// Lê usuario por id
+export async function readUsuariosByID(id:number) {
+  return prisma.usuario.findUnique({where:{id}});
+}
+
+// Lê musica por id
+export async function readMusicasByID(id:number) {
+  return prisma.musicas.findUnique({where:{id}});
+}
+
+// Lê artista por id
+export async function readArtistasByID(id:number) {
+  return prisma.artista.findUnique({where:{id}});
+}
+
+// Deleta um usuário por ID
+export async function deleteUsuario(id: number) {
+  return prisma.usuario.delete({where: { id }});
+}
+
+// Deleta um artista por ID
+export async function deleteArtista(id: number) {
+  return prisma.artista.delete({where: { id }});
+}
+
+// Deleta uma música por ID
+export async function deleteMusica(id: number) {
+  return prisma.musicas.delete({where: { id }});
+}
+
 export default prisma;
