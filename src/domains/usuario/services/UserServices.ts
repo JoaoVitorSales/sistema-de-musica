@@ -1,7 +1,6 @@
 // prismaClient.ts
 import prisma from "../../../../config/prismaClient";
-
-
+import { usuario } from "@prisma/client";
 
 // Adiciona usuario
 export async function createUsuario(data: { nome: string; senha: string; email: string; foto?: string; privilegios: boolean }) {

@@ -1,6 +1,8 @@
 import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import express, { Express } from "express";
+import { readUsuarios } from "../src/domains/usuario/services/UserServices";
+import usuarioRoutes from "../src/domains/usuario/controllers";
 
 dotenv.config()
 
@@ -12,7 +14,8 @@ const options: CorsOptions = {
 };
 
 app.use(cors(options))
-app.use(express.json)
+app.use(express.json())
 app.use(express.urlencoded({
     extended: true
 }))
+app.use("/api/usuario", usuarioRoutes)
