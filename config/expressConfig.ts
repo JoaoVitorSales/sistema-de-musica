@@ -1,7 +1,6 @@
 import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import express, { Express } from "express";
-import { readUsuarios } from "../src/domains/usuario/services/UserServices";
 import usuarioRoutes from "../src/domains/usuario/controllers";
 
 dotenv.config()
