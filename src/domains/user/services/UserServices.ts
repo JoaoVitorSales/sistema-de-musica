@@ -2,7 +2,7 @@
 import prisma from "../../../../config/prismaClient";
 import { usuario } from "@prisma/client";
 
-class UsuarioService {
+class UserService {
     // Adiciona usuario
     async createUser(body: usuario){
       const user = await prisma.usuario.create({
@@ -41,4 +41,4 @@ class UsuarioService {
     }
 }
 
-export default new UsuarioService();
+export default new UserService();
