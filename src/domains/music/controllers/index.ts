@@ -12,6 +12,15 @@ router.get("/", async (req:Request, res: Response, next: NextFunction) => {
     }
 });
 
+router.get("/:id", async(req: Request, res: Response, next: NextFunction) => {
+    try{
+        const usuarioUnico = await MusicServices.readMusicById(Number(req.params.id));
+        res.json(usuarioUnico);
+    }catch(error){
+        next(error);
+    }
+});
+
 router.post("/", async(req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicServices.createMusic(req.body);
