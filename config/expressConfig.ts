@@ -5,6 +5,7 @@ import usuarioRoutes from "../src/domains/user/controllers";
 import musicaRoutes from "../src/domains/music/controllers";
 import artistRoutes from "../src/domains/artist/controllers";
 import UserMusicRoutes from "../src/domains/userMusic/controllers";
+import cookieParser from "cookie-parser";
 
 
 dotenv.config()
@@ -17,6 +18,7 @@ const options: CorsOptions = {
 };
 
 app.use(cors(options))
+app.use(cookieParser());
 app.use(express.json())
 app.use(express.urlencoded({
     extended: true

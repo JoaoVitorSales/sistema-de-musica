@@ -16,7 +16,7 @@ model usuario{
   senha String
   email String @unique
   foto String?
-  privilegios Boolean 
+  privilegios String 
   usuarios usuarioMusica[] 
 }
 
