@@ -51,6 +51,19 @@ export function verifyJWT(req:Request, res: Response, next: NextFunction){
     }
 }
 
+export async function notLoggedIn(req:Request, res: Response, next: NextFunction){
+    try {
+        const token = cookieExtractor(req);
+        if (token){
+            verify(token, process.env.SECRET_KEY || "");
+            throw new PermissionError("Você já está logado")
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 export async function login(req:Request, res: Response, next: NextFunction) {
     try {
         const usuario = await prisma.usuario.findUnique({
@@ -74,5 +87,30 @@ export async function login(req:Request, res: Response, next: NextFunction) {
         res.status(statusCodes.SUCCESS).json("login realizado com sucesso");
     } catch (error) {
         next(error);
+    }
+}
+
+export async function logout(req:Request, res: Response, next: NextFunction) {
+    try {
+        res.clearCookie("jwt");
+        res.status(statusCodes.SUCCESS).json("logout realizado com sucesso");
+    } catch (error) {
+        next(error)
+    }
+}
+
+export function checkRole(privilegios: string[]){
+    return (req:Request, res: Response, next: NextFunction) => {
+        try {
+            const privilegiosUsuario = req.user?.privilegios;
+
+            if(!privilegios || !privilegios.includes(privilegiosUsuario)){
+                throw new PermissionError("Você não tem autorização pra realizar essa função")
+            }
+
+            next();
+        }catch(error){
+            next(error)
+        }
     }
 }
