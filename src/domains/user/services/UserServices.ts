@@ -1,12 +1,21 @@
 // prismaClient.ts
 import prisma from "../../../../config/prismaClient";
 import { usuario } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 class UserService {
     // Adiciona usuario
+    async encryptPassword(password: string){
+      const saltRounds = 10;
+      const encrypted = await bcrypt.hash(password, saltRounds);
+      return encrypted;
+    }
     async createUser(body: usuario){
+
+      const encrypted = await this.encryptPassword(body.senha)
+
       const user = await prisma.usuario.create({
-        data: { nome: body.nome, senha: body.senha, email: body.email, foto: body.foto, privilegios: body.privilegios }
+        data: { nome: body.nome, senha: encrypted, email: body.email, foto: body.foto, privilegios: body.privilegios }
       });
 
       return user;
