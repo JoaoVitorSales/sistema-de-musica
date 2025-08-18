@@ -17,13 +17,13 @@ const options: CorsOptions = {
     origin: process.env.APP_URL
 };
 
-app.use(cors(options))
+app.use(cors(options));
 app.use(cookieParser());
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({
     extended: true
-}))
-app.use("/api/usuario", usuarioRoutes)
-app.use("/api/artista", artistRoutes)
-app.use("/api/musica", musicaRoutes)
-app.use("/api/listagem", UserMusicRoutes)
+}));
+app.use("/api/usuario", usuarioRoutes);
+app.use("/api/artista", artistRoutes);
+app.use("/api/musica", musicaRoutes);
+app.use("/api/listagem", UserMusicRoutes);
