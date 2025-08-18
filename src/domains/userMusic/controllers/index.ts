@@ -1,53 +1,73 @@
-import {Router, Request, Response, NextFunction} from "express";
-import UserMusicService from "../services/UserMusicServices"
+import { Router, Request, Response, NextFunction } from "express";
+import UserMusicService from "../services/UserMusicServices";
+import { verifyJWT, checkRole } from "../../middlewares/auth";
 
 const router = Router();
 
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-    try{
-        const novoUsuario = await UserMusicService.readUserMusic();
-        return res.json(novoUsuario);
-    }catch(error){
-        next(error);
-    }
-}
-);
+// Usuário vê suas músicas ouvidas
+router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const usuariosId = req.user?.id;
 
-router.get("/:id", async(req: Request, res: Response, next: NextFunction) => {
-    try{
-        const usuarioUnico = await UserMusicService.readMusicByUserId(Number(req.params.id));
-        res.json(usuarioUnico);
-    }catch(error){
+        // Pega todas as músicas ouvidas e filtra pelo usuário logado
+        const musicas = await UserMusicService.readUserMusic();
+        const minhasMusicas = musicas.filter(m => m.usuariosId === usuariosId);
+
+        res.json(minhasMusicas);
+    } catch (error) {
         next(error);
     }
 });
 
-router.post("/", async(req: Request, res: Response, next: NextFunction) => {
-    try{
-        const usuario = await UserMusicService.createUserMusic(req.body);
-        res.json(`usuario com ID ${usuario.id} criado`);
-    }catch(error){
+// Admin vê música de qualquer usuário pelo ID do registro
+router.get("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = Number(req.params.id);
+        const registro = await UserMusicService.readMusicByUserId(id);
+        res.json(registro);
+    } catch (error) {
         next(error);
     }
 });
 
-router.put("/:id", async(req: Request, res: Response, next: NextFunction) => {
-    try{
-        const usuario = await UserMusicService.updateUserMusic(Number(req.params.id), req.body);
-        res.json(`usuario com ID ${usuario.id} atualizado`);
-    }catch(error){
+// Usuário adiciona música ouvida
+router.post("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const usuariosId = req.user?.id;
+        const musicaId = Number(req.body.musicaId);
+
+        const registro = await UserMusicService.createUserMusic({ usuariosId, musicaId } as any);
+        res.json(`Música adicionada à lista de músicas ouvidas com ID ${registro.id}`);
+    } catch (error) {
         next(error);
     }
 });
 
-router.delete("/:id", async(req: Request, res: Response, next: NextFunction) => {
-    try{
-        const usuario = await UserMusicService.deleteUserMusic(Number(req.params.id));
-        res.json(`usuario com ID ${usuario.id} deletado`);
-    }catch(error){
+// Admin atualiza registro de música ouvida
+router.put("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = Number(req.params.id);
+        const usuariosId = Number(req.body.usuariosId);
+        const musicaId = Number(req.body.musicaId);
+
+        const registro = await UserMusicService.updateUserMusic(id, { usuariosId, musicaId } as any);
+        res.json(`Registro de música ouvida com ID ${registro.id} atualizado`);
+    } catch (error) {
         next(error);
     }
 });
 
+// Usuário remove música ouvida (pelo ID do registro)
+router.delete("/:id", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = Number(req.params.id);
+
+        const registro = await UserMusicService.deleteUserMusic(id);
+        res.json(`Música removida da lista de músicas ouvidas com ID ${registro.id}`);
+    } catch (error) {
+        next(error);
+    }
+});
 
 export default router;
+

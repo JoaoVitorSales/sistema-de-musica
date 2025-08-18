@@ -1,49 +1,55 @@
-import {Router, Request, Response, NextFunction} from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import MusicServices from "../../music/services/MusicServices";
+import { verifyJWT, checkRole } from "../../middlewares/auth";
 
 const router = Router();
 
-router.get("/", async (req:Request, res: Response, next: NextFunction) => {
+//Listar todas as músicas (apenas admin)
+router.get("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const newMusic = await MusicServices.readMusic();
-        return res.json(newMusic);
-    } catch(error) {
+        const musicas = await MusicServices.readMusic();
+        res.json(musicas);
+    } catch (error) {
         next(error);
     }
 });
 
-router.get("/:id", async(req: Request, res: Response, next: NextFunction) => {
-    try{
-        const usuarioUnico = await MusicServices.readMusicById(Number(req.params.id));
-        res.json(usuarioUnico);
-    }catch(error){
+//Visualizar música específica (apenas admin)
+router.get("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const musica = await MusicServices.readMusicById(Number(req.params.id));
+        res.json(musica);
+    } catch (error) {
         next(error);
     }
 });
 
-router.post("/", async(req: Request, res: Response, next: NextFunction) => {
+//Criar música (apenas admin)
+router.post("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicServices.createMusic(req.body);
-        res.json(`musica com nome ${music.nome} criada`);
-    } catch(error) {
+        res.json(`Música com nome ${music.nome} criada`);
+    } catch (error) {
         next(error);
     }
 });
 
-router.put("/:id", async(req: Request, res: Response, next:NextFunction) => {
-    try{
+//Atualizar música (apenas admin)
+router.put("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
+    try {
         const music = await MusicServices.updateMusic(Number(req.params.id), req.body);
-        res.json(`musica com nome ${music.nome} atualizada`);
-    } catch(error) {
+        res.json(`Música com nome ${music.nome} atualizada`);
+    } catch (error) {
         next(error);
     }
 });
 
-router.delete("/:id", async(req: Request, res: Response, next: NextFunction) => {
+//Deletar música (apenas admin)
+router.delete("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicServices.deleteMusic(Number(req.params.id));
-        res.json(`musica com nome ${music.nome} deletada`);
-    } catch(error) {
+        res.json(`Música com nome ${music.nome} deletada`);
+    } catch (error) {
         next(error);
     }
 });
