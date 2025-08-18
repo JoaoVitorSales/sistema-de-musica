@@ -35,10 +35,12 @@ function cookieExtractor(req: Request){
 export function verifyJWT(req:Request, res: Response, next: NextFunction){
     try {
         const token = cookieExtractor(req);
+        
 
         if (token){
             const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
-            req.user = decoded.user;
+            console.log("Token decodificado pelo verifyJWT:", decoded);
+            req.user = decoded.usuario;
         }
 
         if (req.user == null){

@@ -33,10 +33,24 @@ class UserService {
       return user;
     }
 
+    async readUserSelect(id: number){
+      const user = await prisma.usuario.findUnique({where: {id:id}});
+      return user;
+    }
+
     // Atualiza usuário
     async updateUser(id: number ,body: usuario){
       const user = await prisma.usuario.update({
-        where: {id: id}, data: { nome: body.nome, senha: body.senha, email: body.email, foto: body.foto, privilegios: body.privilegios }
+        where: {id: id}, data: { nome: body.nome, email: body.email, foto: body.foto }
+      });
+      return user;
+    }
+
+    // Atualiza senha
+    async updatePassword(id: number ,body: usuario){
+      const encrypted = await this.encryptPassword(body.senha)
+      const user = await prisma.usuario.update({
+        where: {id: id}, data: { senha: encrypted }
       });
       return user;
     }
@@ -45,7 +59,7 @@ class UserService {
     async deleteUser(id: number){
       const user = await prisma.usuario.delete({
         where: {id: id}
-      })
+      });
       return user;
     }
 }
