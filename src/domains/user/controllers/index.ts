@@ -30,8 +30,8 @@ router.get("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Respo
 router.post("/create", async(req: Request, res: Response, next: NextFunction) => {
     try{
         const usuario = await UserService.createUser(req.body);
-        res.json(`usuario com nome ${usuario.nome} criado`);
-    }catch(error){
+        res.json({ message: `Usuário ${usuario.nome} criado com sucesso` });
+    } catch (error) {
         next(error);
     }
 });
@@ -45,7 +45,7 @@ router.get("/:id", verifyJWT, async (req: Request, res: Response, next: NextFunc
             return res.status(403).json({ message: "Acesso negado" });
         }
 
-        const usuario = await UserService.readUserById(usuarioId);
+        const usuario = await UserService.readUserSelect(usuarioId);
         res.json(usuario);
     } catch (error) {
         next(error);
@@ -122,3 +122,4 @@ router.delete("/:id", verifyJWT, async (req: Request, res: Response, next: NextF
 });
 
 export default router;
+
