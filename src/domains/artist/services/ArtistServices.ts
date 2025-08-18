@@ -1,43 +1,42 @@
-// prismaClient.ts
 import prisma from "../../../../config/prismaClient";
 import { artista } from "@prisma/client";
 
 class ArtistService {
     // Adiciona artista
     async createArtist(body: artista){
-      const music = await prisma.artista.create({
-       data: { nome: body.nome, foto: body.foto, streams: body.streams }
+      const artist = await prisma.artista.create({
+        data: { nome: body.nome, foto: body.foto, streams: body.streams }
       });
-
-      return music;
+      return artist;
     }
 
-    // Lê todos os artistas
+    // Lê todos os artistas em ordem alfabética
     async readArtist(){
-      const music = await prisma.artista.findMany();
-      return music;
+      const artists = await prisma.artista.findMany({
+        orderBy: { nome: 'asc' } 
+      });
+      return artists;
     }
 
     // Lê artista por id
     async readArtistById(id: number){
-      const music = await prisma.artista.findUnique({where: {id:id}});
-      return music;
+      const artist = await prisma.artista.findUnique({where: {id:id}});
+      return artist;
     }
 
     // Atualiza artista
     async updateArtist(id: number ,body: artista){
-      const music = await prisma.artista.update({
-        where: {id: id}, data: { nome: body.nome, foto: body.foto, streams: body.streams }
+      const artist = await prisma.artista.update({
+        where: {id: id}, 
+        data: { nome: body.nome, foto: body.foto, streams: body.streams }
       });
-      return music;
+      return artist;
     }
 
     // Deleta um artista por ID
     async deleteArtist(id: number){
-      const music = await prisma.artista.delete({
-        where: {id: id}
-      })
-      return music;
+      const artist = await prisma.artista.delete({where: {id: id}});
+      return artist;
     }
 }
 
